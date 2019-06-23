@@ -5,7 +5,7 @@
 static void
 usage(void)
 {
-    eprintf("usage: %s [-f] [-i] [-Rr] file ...\n", argv0);
+    eprintf("usage: %s [-fv] [-Rr] file ...\n", argv0);
 }
 
 int

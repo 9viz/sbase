@@ -9,6 +9,7 @@
 
 static int mv_status = 0;
 static int verbose   = 0;
+static int ask       = 0;
 
 static int
 mv(const char *s1, const char *s2, int depth)
@@ -17,6 +18,15 @@ mv(const char *s1, const char *s2, int depth)
                           .follow = 'P', .flags = 0 };
     if (verbose)
         fprintf(stderr, "'%s' -> '%s'\n", s1, s2);
+    if (ask) {
+        struct stat st;
+        if (stat(s2, &st) == 0 && stat(s1, &st) == 0) {
+            printf("mv: overwrite '%s'? ", s2);
+            char ow = getchar();
+            if (ow != 'y')
+                return -1;
+        }
+    }
     if (!rename(s1, s2))
         return (mv_status = 0);
     if (errno == EXDEV) {
@@ -34,7 +44,7 @@ mv(const char *s1, const char *s2, int depth)
 static void
 usage(void)
 {
-    eprintf("usage: %s [-f] [-v] source ... dest\n", argv0);
+    eprintf("usage: %s [-fvi] source ... dest\n", argv0);
 }
 
 int
@@ -44,9 +54,13 @@ main(int argc, char *argv[])
 
     ARGBEGIN {
     case 'f':
+        ask = 0;
         break;
     case 'v':
         verbose = 1;
+        break;
+    case 'i':
+        ask = 1;
         break;
     default:
         usage();
