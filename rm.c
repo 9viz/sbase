@@ -38,9 +38,9 @@ main(int argc, char *argv[])
     }
 
     for (; *argv; argc--, argv++) {
-        if (verbose)
-            fprintf(stderr, "removing %s", *argv);
         recurse(*argv, NULL, &r);
+        if (verbose && !(recurse_status || rm_status))
+            fprintf(stderr, "rm: removed %s\n", *argv);
     }
 
     return rm_status || recurse_status;

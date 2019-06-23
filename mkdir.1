@@ -7,6 +7,7 @@
 .Sh SYNOPSIS
 .Nm
 .Op Fl p
+.Op Fl i
 .Op Fl m Ar mode
 .Ar name ...
 .Sh DESCRIPTION
@@ -26,6 +27,8 @@ Also create necessary parent directories and
 do not fail if
 .Ar name
 already exists.
+.It Fl v
+Write name after creating to stderr.
 .El
 .Sh SEE ALSO
 .Xr mkdir 2

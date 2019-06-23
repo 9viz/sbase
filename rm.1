@@ -7,7 +7,7 @@
 .Sh SYNOPSIS
 .Nm
 .Op Fl f
-.Op Fl i
+.Op Fl v
 .Op Fl Rr
 .Ar file ...
 .Sh DESCRIPTION
@@ -29,8 +29,8 @@ Do not prompt before removing
 Do not report when
 .Ar file
 doesn't exist or couldn't be removed.
-.It Fl i
-Enable more verbose output. Print file(s) before removing them.
+.It Fl v
+Write file after removing it to stderr.
 .It Fl Rr
 Remove directories recursively.
 .El
