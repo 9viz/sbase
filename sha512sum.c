@@ -8,34 +8,34 @@
 
 static struct sha512 s;
 struct crypt_ops sha512_ops = {
-	sha512_init,
-	sha512_update,
-	sha512_sum,
-	&s,
+    sha512_init,
+    sha512_update,
+    sha512_sum,
+    &s,
 };
 
 static void
 usage(void)
 {
-	eprintf("usage: %s [-c] [file ...]\n", argv0);
+    eprintf("usage: %s [-c] [file ...]\n", argv0);
 }
 
 int
 main(int argc, char *argv[])
 {
-	int ret = 0, (*cryptfunc)(int, char **, struct crypt_ops *, uint8_t *, size_t) = cryptmain;
-	uint8_t md[SHA512_DIGEST_LENGTH];
+    int ret = 0, (*cryptfunc)(int, char **, struct crypt_ops *, uint8_t *, size_t) = cryptmain;
+    uint8_t md[SHA512_DIGEST_LENGTH];
 
-	ARGBEGIN {
-	case 'c':
-		cryptfunc = cryptcheck;
-		break;
-	default:
-		usage();
-	} ARGEND
+    ARGBEGIN {
+    case 'c':
+        cryptfunc = cryptcheck;
+        break;
+    default:
+        usage();
+    } ARGEND
 
-	ret |= cryptfunc(argc, argv, &sha512_ops, md, sizeof(md));
-	ret |= fshut(stdin, "<stdin>") | fshut(stdout, "<stdout>");
+    ret |= cryptfunc(argc, argv, &sha512_ops, md, sizeof(md));
+    ret |= fshut(stdin, "<stdin>") | fshut(stdout, "<stdout>");
 
-	return ret;
+    return ret;
 }

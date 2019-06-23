@@ -11,35 +11,35 @@
 static void
 usage(void)
 {
-	eprintf("usage: %s cmd [arg ...]\n", argv0);
+    eprintf("usage: %s cmd [arg ...]\n", argv0);
 }
 
 int
 main(int argc, char *argv[])
 {
-	int fd, savederrno;
+    int fd, savederrno;
 
-	argv0 = *argv, argv0 ? (argc--, argv++) : (void *)0;
+    argv0 = *argv, argv0 ? (argc--, argv++) : (void *)0;
 
-	if (!argc)
-		usage();
+    if (!argc)
+        usage();
 
-	if (signal(SIGHUP, SIG_IGN) == SIG_ERR)
-		enprintf(127, "signal HUP:");
+    if (signal(SIGHUP, SIG_IGN) == SIG_ERR)
+        enprintf(127, "signal HUP:");
 
-	if (isatty(STDOUT_FILENO)) {
-		if ((fd = open("nohup.out", O_APPEND | O_CREAT, S_IRUSR | S_IWUSR)) < 0)
-			enprintf(127, "open nohup.out:");
-		if (dup2(fd, STDOUT_FILENO) < 0)
-			enprintf(127, "dup2:");
-		close(fd);
-	}
-	if (isatty(STDERR_FILENO) && dup2(STDOUT_FILENO, STDERR_FILENO) < 0)
-		enprintf(127, "dup2:");
+    if (isatty(STDOUT_FILENO)) {
+        if ((fd = open("nohup.out", O_APPEND | O_CREAT, S_IRUSR | S_IWUSR)) < 0)
+            enprintf(127, "open nohup.out:");
+        if (dup2(fd, STDOUT_FILENO) < 0)
+            enprintf(127, "dup2:");
+        close(fd);
+    }
+    if (isatty(STDERR_FILENO) && dup2(STDOUT_FILENO, STDERR_FILENO) < 0)
+        enprintf(127, "dup2:");
 
-	execvp(argv[0], argv);
-	savederrno = errno;
-	weprintf("execvp %s:", argv[0]);
+    execvp(argv[0], argv);
+    savederrno = errno;
+    weprintf("execvp %s:", argv[0]);
 
-	_exit(126 + (savederrno == ENOENT));
+    _exit(126 + (savederrno == ENOENT));
 }

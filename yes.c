@@ -6,14 +6,14 @@
 int
 main(int argc, char *argv[])
 {
-	char **p;
+    char **p;
 
-	argv0 = *argv, argv0 ? (argc--, argv++) : (void *)0;
+    argv0 = *argv, argv0 ? (argc--, argv++) : (void *)0;
 
-	for (p = argv; ; p = (*p && *(p + 1)) ? p + 1 : argv) {
-		fputs(*p ? *p : "y", stdout);
-		putchar((!*p || !*(p + 1)) ? '\n' : ' ');
-	}
+    for (p = argv; ; p = (*p && *(p + 1)) ? p + 1 : argv) {
+        fputs(*p ? *p : "y", stdout);
+        putchar((!*p || !*(p + 1)) ? '\n' : ' ');
+    }
 
-	return 1; /* not reached */
+    return 1; /* not reached */
 }

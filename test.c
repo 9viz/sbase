@@ -11,50 +11,50 @@
 static int
 intcmp(char *a, char *b)
 {
-	char *s;
-	int asign = *a == '-' ? -1 : 1;
-	int bsign = *b == '-' ? -1 : 1;
+    char *s;
+    int asign = *a == '-' ? -1 : 1;
+    int bsign = *b == '-' ? -1 : 1;
 
-	if (*a == '-' || *a == '+') a += 1;
-	if (*b == '-' || *b == '+') b += 1;
+    if (*a == '-' || *a == '+') a += 1;
+    if (*b == '-' || *b == '+') b += 1;
 
-	if (!*a || !*b)
-		goto noint;
-	for (s = a; *s; s++)
-		if (!isdigit(*s))
-			goto noint;
-	for (s = b; *s; s++)
-		if (!isdigit(*s))
-			goto noint;
+    if (!*a || !*b)
+        goto noint;
+    for (s = a; *s; s++)
+        if (!isdigit(*s))
+            goto noint;
+    for (s = b; *s; s++)
+        if (!isdigit(*s))
+            goto noint;
 
-	while (*a == '0') a++;
-	while (*b == '0') b++;
-	asign *= !!*a;
-	bsign *= !!*b;
+    while (*a == '0') a++;
+    while (*b == '0') b++;
+    asign *= !!*a;
+    bsign *= !!*b;
 
-	if (asign != bsign)
-		return asign < bsign ? -1 : 1;
-	else if (strlen(a) != strlen(b))
-		return asign * (strlen(a) < strlen(b) ? -1 : 1);
-	else
-		return asign * strcmp(a, b);
+    if (asign != bsign)
+        return asign < bsign ? -1 : 1;
+    else if (strlen(a) != strlen(b))
+        return asign * (strlen(a) < strlen(b) ? -1 : 1);
+    else
+        return asign * strcmp(a, b);
 
 noint:
-	enprintf(2, "expected integer operands\n");
+    enprintf(2, "expected integer operands\n");
 
-	return 0; /* not reached */
+    return 0; /* not reached */
 }
 
 static int
 mtimecmp(struct stat *buf1, struct stat *buf2)
 {
-	if (buf1->st_mtime < buf2->st_mtime) return -1;
-	if (buf1->st_mtime > buf2->st_mtime) return +1;
+    if (buf1->st_mtime < buf2->st_mtime) return -1;
+    if (buf1->st_mtime > buf2->st_mtime) return +1;
 #ifdef st_mtime
-	if (buf1->st_mtim.tv_nsec < buf2->st_mtim.tv_nsec) return -1;
-	if (buf1->st_mtim.tv_nsec > buf2->st_mtim.tv_nsec) return +1;
+    if (buf1->st_mtim.tv_nsec < buf2->st_mtim.tv_nsec) return -1;
+    if (buf1->st_mtim.tv_nsec > buf2->st_mtim.tv_nsec) return +1;
 #endif
-	return 0;
+    return 0;
 }
 
 static int unary_b(char *s) { struct stat buf; if ( stat(s, &buf)) return 0; return S_ISBLK  (buf.st_mode); }
@@ -92,156 +92,156 @@ static int binary_le(char *s1, char *s2) { return intcmp(s1, s2) <= 0; }
 static int
 binary_ef(char *s1, char *s2)
 {
-	struct stat buf1, buf2;
-	if (stat(s1, &buf1) || stat(s2, &buf2)) return 0;
-	return buf1.st_dev == buf2.st_dev && buf1.st_ino == buf2.st_ino;
+    struct stat buf1, buf2;
+    if (stat(s1, &buf1) || stat(s2, &buf2)) return 0;
+    return buf1.st_dev == buf2.st_dev && buf1.st_ino == buf2.st_ino;
 }
 
 static int
 binary_ot(char *s1, char *s2)
 {
-	struct stat buf1, buf2;
-	if (stat(s1, &buf1) || stat(s2, &buf2)) return 0;
-	return mtimecmp(&buf1, &buf2) < 0;
+    struct stat buf1, buf2;
+    if (stat(s1, &buf1) || stat(s2, &buf2)) return 0;
+    return mtimecmp(&buf1, &buf2) < 0;
 }
 
 static int
 binary_nt(char *s1, char *s2)
 {
-	struct stat buf1, buf2;
-	if (stat(s1, &buf1) || stat(s2, &buf2)) return 0;
-	return mtimecmp(&buf1, &buf2) > 0;
+    struct stat buf1, buf2;
+    if (stat(s1, &buf1) || stat(s2, &buf2)) return 0;
+    return mtimecmp(&buf1, &buf2) > 0;
 }
 
 struct test {
-	char *name;
-	union {
-		int (*u)(char *);
-		int (*b)(char *, char *);
-	} func;
+    char *name;
+    union {
+        int (*u)(char *);
+        int (*b)(char *, char *);
+    } func;
 };
 
 static struct test unary[] = {
-	{ "-b", { .u = unary_b } },
-	{ "-c", { .u = unary_c } },
-	{ "-d", { .u = unary_d } },
-	{ "-e", { .u = unary_e } },
-	{ "-f", { .u = unary_f } },
-	{ "-g", { .u = unary_g } },
-	{ "-h", { .u = unary_h } },
-	{ "-k", { .u = unary_k } },
-	{ "-L", { .u = unary_h } },
-	{ "-n", { .u = unary_n } },
-	{ "-p", { .u = unary_p } },
-	{ "-r", { .u = unary_r } },
-	{ "-S", { .u = unary_S } },
-	{ "-s", { .u = unary_s } },
-	{ "-t", { .u = unary_t } },
-	{ "-u", { .u = unary_u } },
-	{ "-w", { .u = unary_w } },
-	{ "-x", { .u = unary_x } },
-	{ "-z", { .u = unary_z } },
+    { "-b", { .u = unary_b } },
+    { "-c", { .u = unary_c } },
+    { "-d", { .u = unary_d } },
+    { "-e", { .u = unary_e } },
+    { "-f", { .u = unary_f } },
+    { "-g", { .u = unary_g } },
+    { "-h", { .u = unary_h } },
+    { "-k", { .u = unary_k } },
+    { "-L", { .u = unary_h } },
+    { "-n", { .u = unary_n } },
+    { "-p", { .u = unary_p } },
+    { "-r", { .u = unary_r } },
+    { "-S", { .u = unary_S } },
+    { "-s", { .u = unary_s } },
+    { "-t", { .u = unary_t } },
+    { "-u", { .u = unary_u } },
+    { "-w", { .u = unary_w } },
+    { "-x", { .u = unary_x } },
+    { "-z", { .u = unary_z } },
 
-	{ NULL },
+    { NULL },
 };
 
 static struct test binary[] = {
-	{ "="  , { .b = binary_se } },
-	{ "!=" , { .b = binary_sn } },
-	{ "-eq", { .b = binary_eq } },
-	{ "-ne", { .b = binary_ne } },
-	{ "-gt", { .b = binary_gt } },
-	{ "-ge", { .b = binary_ge } },
-	{ "-lt", { .b = binary_lt } },
-	{ "-le", { .b = binary_le } },
-	{ "-ef", { .b = binary_ef } },
-	{ "-ot", { .b = binary_ot } },
-	{ "-nt", { .b = binary_nt } },
+    { "="  , { .b = binary_se } },
+    { "!=" , { .b = binary_sn } },
+    { "-eq", { .b = binary_eq } },
+    { "-ne", { .b = binary_ne } },
+    { "-gt", { .b = binary_gt } },
+    { "-ge", { .b = binary_ge } },
+    { "-lt", { .b = binary_lt } },
+    { "-le", { .b = binary_le } },
+    { "-ef", { .b = binary_ef } },
+    { "-ot", { .b = binary_ot } },
+    { "-nt", { .b = binary_nt } },
 
-	{ NULL },
+    { NULL },
 };
 
 static struct test *
 find_test(struct test *tests, char *name)
 {
-	struct test *t;
+    struct test *t;
 
-	for (t = tests; t->name; t++)
-		if (!strcmp(t->name, name))
-			return t;
+    for (t = tests; t->name; t++)
+        if (!strcmp(t->name, name))
+            return t;
 
-	return NULL;
+    return NULL;
 }
 
 static int
 noarg(char *argv[])
 {
-	return 0;
+    return 0;
 }
 
 static int
 onearg(char *argv[])
 {
-	return unary_n(argv[0]);
+    return unary_n(argv[0]);
 }
 
 static int
 twoarg(char *argv[])
 {
-	struct test *t;
+    struct test *t;
 
-	if (!strcmp(argv[0], "!"))
-		return !onearg(argv + 1);
+    if (!strcmp(argv[0], "!"))
+        return !onearg(argv + 1);
 
-	if ((t = find_test(unary, *argv)))
-		return t->func.u(argv[1]);
+    if ((t = find_test(unary, *argv)))
+        return t->func.u(argv[1]);
 
-	enprintf(2, "bad unary test %s\n", argv[0]);
+    enprintf(2, "bad unary test %s\n", argv[0]);
 
-	return 0; /* not reached */
+    return 0; /* not reached */
 }
 
 static int
 threearg(char *argv[])
 {
-	struct test *t = find_test(binary, argv[1]);
+    struct test *t = find_test(binary, argv[1]);
 
-	if (t)
-		return t->func.b(argv[0], argv[2]);
+    if (t)
+        return t->func.b(argv[0], argv[2]);
 
-	if (!strcmp(argv[0], "!"))
-		return !twoarg(argv + 1);
+    if (!strcmp(argv[0], "!"))
+        return !twoarg(argv + 1);
 
-	enprintf(2, "bad binary test %s\n", argv[1]);
+    enprintf(2, "bad binary test %s\n", argv[1]);
 
-	return 0; /* not reached */
+    return 0; /* not reached */
 }
 
 static int
 fourarg(char *argv[])
 {
-	if (!strcmp(argv[0], "!"))
-		return !threearg(argv + 1);
+    if (!strcmp(argv[0], "!"))
+        return !threearg(argv + 1);
 
-	enprintf(2, "too many arguments\n");
+    enprintf(2, "too many arguments\n");
 
-	return 0; /* not reached */
+    return 0; /* not reached */
 }
 
 int
 main(int argc, char *argv[])
 {
-	int (*narg[])(char *[]) = { noarg, onearg, twoarg, threearg, fourarg };
-	size_t len;
+    int (*narg[])(char *[]) = { noarg, onearg, twoarg, threearg, fourarg };
+    size_t len;
 
-	argv0 = *argv, argv0 ? (argc--, argv++) : (void *)0;
+    argv0 = *argv, argv0 ? (argc--, argv++) : (void *)0;
 
-	len = argv0 ? strlen(argv0) : 0;
-	if (len && argv0[--len] == '[' && (!len || argv0[--len] == '/') && strcmp(argv[--argc], "]"))
-		enprintf(2, "no matching ]\n");
+    len = argv0 ? strlen(argv0) : 0;
+    if (len && argv0[--len] == '[' && (!len || argv0[--len] == '/') && strcmp(argv[--argc], "]"))
+        enprintf(2, "no matching ]\n");
 
-	if (argc > 4)
-		enprintf(2, "too many arguments\n");
+    if (argc > 4)
+        enprintf(2, "too many arguments\n");
 
-	return !narg[argc](argv);
+    return !narg[argc](argv);
 }

@@ -65,59 +65,59 @@ static const unsigned long crctab[] = {         0x00000000,
 static void
 cksum(int fd, const char *s)
 {
-	ssize_t n;
-	size_t len = 0, i;
-	uint32_t ck = 0;
-	unsigned char buf[BUFSIZ];
+    ssize_t n;
+    size_t len = 0, i;
+    uint32_t ck = 0;
+    unsigned char buf[BUFSIZ];
 
-	while ((n = read(fd, buf, sizeof(buf))) > 0) {
-		for (i = 0; i < n; i++)
-			ck = (ck << 8) ^ crctab[(ck >> 24) ^ buf[i]];
-		len += n;
-	}
-	if (n < 0) {
-		weprintf("read %s:", s ? s : "<stdin>");
-		ret = 1;
-		return;
-	}
+    while ((n = read(fd, buf, sizeof(buf))) > 0) {
+        for (i = 0; i < n; i++)
+            ck = (ck << 8) ^ crctab[(ck >> 24) ^ buf[i]];
+        len += n;
+    }
+    if (n < 0) {
+        weprintf("read %s:", s ? s : "<stdin>");
+        ret = 1;
+        return;
+    }
 
-	for (i = len; i; i >>= 8)
-		ck = (ck << 8) ^ crctab[(ck >> 24) ^ (i & 0xFF)];
+    for (i = len; i; i >>= 8)
+        ck = (ck << 8) ^ crctab[(ck >> 24) ^ (i & 0xFF)];
 
-	printf("%"PRIu32" %zu", ~ck, len);
-	if (s) {
-		putchar(' ');
-		fputs(s, stdout);
-	}
-	putchar('\n');
+    printf("%"PRIu32" %zu", ~ck, len);
+    if (s) {
+        putchar(' ');
+        fputs(s, stdout);
+    }
+    putchar('\n');
 }
 
 int
 main(int argc, char *argv[])
 {
-	int fd;
+    int fd;
 
-	argv0 = *argv, argv0 ? (argc--, argv++) : (void *)0;
+    argv0 = *argv, argv0 ? (argc--, argv++) : (void *)0;
 
-	if (!argc) {
-		cksum(0, NULL);
-	} else {
-		for (; *argv; argc--, argv++) {
-			if (!strcmp(*argv, "-")) {
-				*argv = "<stdin>";
-				fd = 0;
-			} else if ((fd = open(*argv, O_RDONLY)) < 0) {
-				weprintf("open %s:", *argv);
-				ret = 1;
-				continue;
-			}
-			cksum(fd, *argv);
-			if (fd != 0)
-				close(fd);
-		}
-	}
+    if (!argc) {
+        cksum(0, NULL);
+    } else {
+        for (; *argv; argc--, argv++) {
+            if (!strcmp(*argv, "-")) {
+                *argv = "<stdin>";
+                fd = 0;
+            } else if ((fd = open(*argv, O_RDONLY)) < 0) {
+                weprintf("open %s:", *argv);
+                ret = 1;
+                continue;
+            }
+            cksum(fd, *argv);
+            if (fd != 0)
+                close(fd);
+        }
+    }
 
-	ret |= fshut(stdout, "<stdout>");
+    ret |= fshut(stdout, "<stdout>");
 
-	return ret;
+    return ret;
 }

@@ -7,23 +7,23 @@
 static void
 usage(void)
 {
-	eprintf("usage: %s\n", argv0);
+    eprintf("usage: %s\n", argv0);
 }
 
 int
 main(int argc, char *argv[])
 {
-	char *login;
+    char *login;
 
-	argv0 = *argv, argv0 ? (argc--, argv++) : (void *)0;
+    argv0 = *argv, argv0 ? (argc--, argv++) : (void *)0;
 
-	if (argc)
-		usage();
+    if (argc)
+        usage();
 
-	if ((login = getlogin()))
-		puts(login);
-	else
-		eprintf("no login name\n");
+    if ((login = getlogin()))
+        puts(login);
+    else
+        eprintf("no login name\n");
 
-	return fshut(stdout, "<stdout>");
+    return fshut(stdout, "<stdout>");
 }

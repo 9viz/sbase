@@ -7,22 +7,22 @@
 static void
 usage(void)
 {
-	enprintf(2, "usage: %s\n", argv0);
+    enprintf(2, "usage: %s\n", argv0);
 }
 
 int
 main(int argc, char *argv[])
 {
-	char *tty;
+    char *tty;
 
-	argv0 = *argv, argv0 ? (argc--, argv++) : (void *)0;
+    argv0 = *argv, argv0 ? (argc--, argv++) : (void *)0;
 
-	if (argc)
-		usage();
+    if (argc)
+        usage();
 
-	tty = ttyname(STDIN_FILENO);
-	puts(tty ? tty : "not a tty");
+    tty = ttyname(STDIN_FILENO);
+    puts(tty ? tty : "not a tty");
 
-	enfshut(2, stdout, "<stdout>");
-	return !tty;
+    enfshut(2, stdout, "<stdout>");
+    return !tty;
 }

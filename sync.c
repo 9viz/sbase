@@ -6,17 +6,17 @@
 static void
 usage(void)
 {
-	eprintf("usage: %s\n", argv0);
+    eprintf("usage: %s\n", argv0);
 }
 
 int
 main(int argc, char *argv[])
 {
-	argv0 = *argv, argv0 ? (argc--, argv++) : (void *)0;
+    argv0 = *argv, argv0 ? (argc--, argv++) : (void *)0;
 
-	if (argc)
-		usage();
-	sync();
+    if (argc)
+        usage();
+    sync();
 
-	return 0;
+    return 0;
 }

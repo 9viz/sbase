@@ -8,39 +8,39 @@
 static void
 usage(void)
 {
-	eprintf("usage: %s dir [cmd [arg ...]]\n", argv0);
+    eprintf("usage: %s dir [cmd [arg ...]]\n", argv0);
 }
 
 int
 main(int argc, char *argv[])
 {
-	char *shell[] = { "/bin/sh", "-i", NULL }, *aux, *cmd;
-	int savederrno;
+    char *shell[] = { "/bin/sh", "-i", NULL }, *aux, *cmd;
+    int savederrno;
 
-	argv0 = *argv, argv0 ? (argc--, argv++) : (void *)0;
+    argv0 = *argv, argv0 ? (argc--, argv++) : (void *)0;
 
-	if (!argc)
-		usage();
+    if (!argc)
+        usage();
 
-	if ((aux = getenv("SHELL")))
-		shell[0] = aux;
+    if ((aux = getenv("SHELL")))
+        shell[0] = aux;
 
-	if (chroot(argv[0]) < 0)
-		eprintf("chroot %s:", argv[0]);
+    if (chroot(argv[0]) < 0)
+        eprintf("chroot %s:", argv[0]);
 
-	if (chdir("/") < 0)
-		eprintf("chdir:");
+    if (chdir("/") < 0)
+        eprintf("chdir:");
 
-	if (argc == 1) {
-		cmd = *shell;
-		execvp(cmd, shell);
-	} else {
-		cmd = argv[1];
-		execvp(cmd, argv + 1);
-	}
+    if (argc == 1) {
+        cmd = *shell;
+        execvp(cmd, shell);
+    } else {
+        cmd = argv[1];
+        execvp(cmd, argv + 1);
+    }
 
-	savederrno = errno;
-	weprintf("execvp %s:", cmd);
+    savederrno = errno;
+    weprintf("execvp %s:", cmd);
 
-	_exit(126 + (savederrno == ENOENT));
+    _exit(126 + (savederrno == ENOENT));
 }
