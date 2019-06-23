@@ -20,7 +20,7 @@ mv(const char *s1, const char *s2, int depth)
         fprintf(stderr, "'%s' -> '%s'\n", s1, s2);
     if (ask) {
         struct stat st;
-        if (stat(s2, &st) == 0 && stat(s1, &st) == 0) {
+        if (stat(s1, &st) == 0 && stat(s2, &st) == 0) {
             printf("mv: overwrite '%s'? ", s2);
             char ow = getchar();
             if (ow != 'y')
