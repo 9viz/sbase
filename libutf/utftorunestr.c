@@ -4,10 +4,10 @@
 int
 utftorunestr(const char *str, Rune *r)
 {
-	int i, n;
+    int i, n;
 
-	for(i = 0; (n = chartorune(&r[i], str)) && r[i]; i++)
-		str += n;
+    for(i = 0; (n = chartorune(&r[i], str)) && r[i]; i++)
+        str += n;
 
-	return i;
+    return i;
 }

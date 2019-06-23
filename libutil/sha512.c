@@ -42,134 +42,134 @@ static const uint64_t K[80] = {
 static void
 processblock(struct sha512 *s, const uint8_t *buf)
 {
-	uint64_t W[80], t1, t2, a, b, c, d, e, f, g, h;
-	int i;
+    uint64_t W[80], t1, t2, a, b, c, d, e, f, g, h;
+    int i;
 
-	for (i = 0; i < 16; i++) {
-		W[i] = (uint64_t)buf[8*i]<<56;
-		W[i] |= (uint64_t)buf[8*i+1]<<48;
-		W[i] |= (uint64_t)buf[8*i+2]<<40;
-		W[i] |= (uint64_t)buf[8*i+3]<<32;
-		W[i] |= (uint64_t)buf[8*i+4]<<24;
-		W[i] |= (uint64_t)buf[8*i+5]<<16;
-		W[i] |= (uint64_t)buf[8*i+6]<<8;
-		W[i] |= buf[8*i+7];
-	}
-	for (; i < 80; i++)
-		W[i] = R1(W[i-2]) + W[i-7] + R0(W[i-15]) + W[i-16];
-	a = s->h[0];
-	b = s->h[1];
-	c = s->h[2];
-	d = s->h[3];
-	e = s->h[4];
-	f = s->h[5];
-	g = s->h[6];
-	h = s->h[7];
-	for (i = 0; i < 80; i++) {
-		t1 = h + S1(e) + Ch(e,f,g) + K[i] + W[i];
-		t2 = S0(a) + Maj(a,b,c);
-		h = g;
-		g = f;
-		f = e;
-		e = d + t1;
-		d = c;
-		c = b;
-		b = a;
-		a = t1 + t2;
-	}
-	s->h[0] += a;
-	s->h[1] += b;
-	s->h[2] += c;
-	s->h[3] += d;
-	s->h[4] += e;
-	s->h[5] += f;
-	s->h[6] += g;
-	s->h[7] += h;
+    for (i = 0; i < 16; i++) {
+        W[i] = (uint64_t)buf[8*i]<<56;
+        W[i] |= (uint64_t)buf[8*i+1]<<48;
+        W[i] |= (uint64_t)buf[8*i+2]<<40;
+        W[i] |= (uint64_t)buf[8*i+3]<<32;
+        W[i] |= (uint64_t)buf[8*i+4]<<24;
+        W[i] |= (uint64_t)buf[8*i+5]<<16;
+        W[i] |= (uint64_t)buf[8*i+6]<<8;
+        W[i] |= buf[8*i+7];
+    }
+    for (; i < 80; i++)
+        W[i] = R1(W[i-2]) + W[i-7] + R0(W[i-15]) + W[i-16];
+    a = s->h[0];
+    b = s->h[1];
+    c = s->h[2];
+    d = s->h[3];
+    e = s->h[4];
+    f = s->h[5];
+    g = s->h[6];
+    h = s->h[7];
+    for (i = 0; i < 80; i++) {
+        t1 = h + S1(e) + Ch(e,f,g) + K[i] + W[i];
+        t2 = S0(a) + Maj(a,b,c);
+        h = g;
+        g = f;
+        f = e;
+        e = d + t1;
+        d = c;
+        c = b;
+        b = a;
+        a = t1 + t2;
+    }
+    s->h[0] += a;
+    s->h[1] += b;
+    s->h[2] += c;
+    s->h[3] += d;
+    s->h[4] += e;
+    s->h[5] += f;
+    s->h[6] += g;
+    s->h[7] += h;
 }
 
 static void
 pad(struct sha512 *s)
 {
-	unsigned r = s->len % 128;
+    unsigned r = s->len % 128;
 
-	s->buf[r++] = 0x80;
-	if (r > 112) {
-		memset(s->buf + r, 0, 128 - r);
-		r = 0;
-		processblock(s, s->buf);
-	}
-	memset(s->buf + r, 0, 120 - r);
-	s->len *= 8;
-	s->buf[120] = s->len >> 56;
-	s->buf[121] = s->len >> 48;
-	s->buf[122] = s->len >> 40;
-	s->buf[123] = s->len >> 32;
-	s->buf[124] = s->len >> 24;
-	s->buf[125] = s->len >> 16;
-	s->buf[126] = s->len >> 8;
-	s->buf[127] = s->len;
-	processblock(s, s->buf);
+    s->buf[r++] = 0x80;
+    if (r > 112) {
+        memset(s->buf + r, 0, 128 - r);
+        r = 0;
+        processblock(s, s->buf);
+    }
+    memset(s->buf + r, 0, 120 - r);
+    s->len *= 8;
+    s->buf[120] = s->len >> 56;
+    s->buf[121] = s->len >> 48;
+    s->buf[122] = s->len >> 40;
+    s->buf[123] = s->len >> 32;
+    s->buf[124] = s->len >> 24;
+    s->buf[125] = s->len >> 16;
+    s->buf[126] = s->len >> 8;
+    s->buf[127] = s->len;
+    processblock(s, s->buf);
 }
 
 void
 sha512_init(void *ctx)
 {
-	struct sha512 *s = ctx;
-	s->len = 0;
-	s->h[0] = 0x6a09e667f3bcc908ULL;
-	s->h[1] = 0xbb67ae8584caa73bULL;
-	s->h[2] = 0x3c6ef372fe94f82bULL;
-	s->h[3] = 0xa54ff53a5f1d36f1ULL;
-	s->h[4] = 0x510e527fade682d1ULL;
-	s->h[5] = 0x9b05688c2b3e6c1fULL;
-	s->h[6] = 0x1f83d9abfb41bd6bULL;
-	s->h[7] = 0x5be0cd19137e2179ULL;
+    struct sha512 *s = ctx;
+    s->len = 0;
+    s->h[0] = 0x6a09e667f3bcc908ULL;
+    s->h[1] = 0xbb67ae8584caa73bULL;
+    s->h[2] = 0x3c6ef372fe94f82bULL;
+    s->h[3] = 0xa54ff53a5f1d36f1ULL;
+    s->h[4] = 0x510e527fade682d1ULL;
+    s->h[5] = 0x9b05688c2b3e6c1fULL;
+    s->h[6] = 0x1f83d9abfb41bd6bULL;
+    s->h[7] = 0x5be0cd19137e2179ULL;
 }
 
 void
 sha512_sum_n(void *ctx, uint8_t *md, int n)
 {
-	struct sha512 *s = ctx;
-	int i;
+    struct sha512 *s = ctx;
+    int i;
 
-	pad(s);
-	for (i = 0; i < n; i++) {
-		md[8*i] = s->h[i] >> 56;
-		md[8*i+1] = s->h[i] >> 48;
-		md[8*i+2] = s->h[i] >> 40;
-		md[8*i+3] = s->h[i] >> 32;
-		md[8*i+4] = s->h[i] >> 24;
-		md[8*i+5] = s->h[i] >> 16;
-		md[8*i+6] = s->h[i] >> 8;
-		md[8*i+7] = s->h[i];
-	}
+    pad(s);
+    for (i = 0; i < n; i++) {
+        md[8*i] = s->h[i] >> 56;
+        md[8*i+1] = s->h[i] >> 48;
+        md[8*i+2] = s->h[i] >> 40;
+        md[8*i+3] = s->h[i] >> 32;
+        md[8*i+4] = s->h[i] >> 24;
+        md[8*i+5] = s->h[i] >> 16;
+        md[8*i+6] = s->h[i] >> 8;
+        md[8*i+7] = s->h[i];
+    }
 }
 
 void
 sha512_sum(void *ctx, uint8_t md[SHA512_DIGEST_LENGTH])
 {
-	sha512_sum_n(ctx, md, 8);
+    sha512_sum_n(ctx, md, 8);
 }
 
 void
 sha512_update(void *ctx, const void *m, unsigned long len)
 {
-	struct sha512 *s = ctx;
-	const uint8_t *p = m;
-	unsigned r = s->len % 128;
+    struct sha512 *s = ctx;
+    const uint8_t *p = m;
+    unsigned r = s->len % 128;
 
-	s->len += len;
-	if (r) {
-		if (len < 128 - r) {
-			memcpy(s->buf + r, p, len);
-			return;
-		}
-		memcpy(s->buf + r, p, 128 - r);
-		len -= 128 - r;
-		p += 128 - r;
-		processblock(s, s->buf);
-	}
-	for (; len >= 128; len -= 128, p += 128)
-		processblock(s, p);
-	memcpy(s->buf, p, len);
+    s->len += len;
+    if (r) {
+        if (len < 128 - r) {
+            memcpy(s->buf + r, p, len);
+            return;
+        }
+        memcpy(s->buf + r, p, 128 - r);
+        len -= 128 - r;
+        p += 128 - r;
+        processblock(s, s->buf);
+    }
+    for (; len >= 128; len -= 128, p += 128)
+        processblock(s, p);
+    memcpy(s->buf, p, len);
 }

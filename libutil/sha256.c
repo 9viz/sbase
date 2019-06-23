@@ -29,126 +29,126 @@ static const uint32_t K[64] = {
 static void
 processblock(struct sha256 *s, const uint8_t *buf)
 {
-	uint32_t W[64], t1, t2, a, b, c, d, e, f, g, h;
-	int i;
+    uint32_t W[64], t1, t2, a, b, c, d, e, f, g, h;
+    int i;
 
-	for (i = 0; i < 16; i++) {
-		W[i] = (uint32_t)buf[4*i]<<24;
-		W[i] |= (uint32_t)buf[4*i+1]<<16;
-		W[i] |= (uint32_t)buf[4*i+2]<<8;
-		W[i] |= buf[4*i+3];
-	}
-	for (; i < 64; i++)
-		W[i] = R1(W[i-2]) + W[i-7] + R0(W[i-15]) + W[i-16];
-	a = s->h[0];
-	b = s->h[1];
-	c = s->h[2];
-	d = s->h[3];
-	e = s->h[4];
-	f = s->h[5];
-	g = s->h[6];
-	h = s->h[7];
-	for (i = 0; i < 64; i++) {
-		t1 = h + S1(e) + Ch(e,f,g) + K[i] + W[i];
-		t2 = S0(a) + Maj(a,b,c);
-		h = g;
-		g = f;
-		f = e;
-		e = d + t1;
-		d = c;
-		c = b;
-		b = a;
-		a = t1 + t2;
-	}
-	s->h[0] += a;
-	s->h[1] += b;
-	s->h[2] += c;
-	s->h[3] += d;
-	s->h[4] += e;
-	s->h[5] += f;
-	s->h[6] += g;
-	s->h[7] += h;
+    for (i = 0; i < 16; i++) {
+        W[i] = (uint32_t)buf[4*i]<<24;
+        W[i] |= (uint32_t)buf[4*i+1]<<16;
+        W[i] |= (uint32_t)buf[4*i+2]<<8;
+        W[i] |= buf[4*i+3];
+    }
+    for (; i < 64; i++)
+        W[i] = R1(W[i-2]) + W[i-7] + R0(W[i-15]) + W[i-16];
+    a = s->h[0];
+    b = s->h[1];
+    c = s->h[2];
+    d = s->h[3];
+    e = s->h[4];
+    f = s->h[5];
+    g = s->h[6];
+    h = s->h[7];
+    for (i = 0; i < 64; i++) {
+        t1 = h + S1(e) + Ch(e,f,g) + K[i] + W[i];
+        t2 = S0(a) + Maj(a,b,c);
+        h = g;
+        g = f;
+        f = e;
+        e = d + t1;
+        d = c;
+        c = b;
+        b = a;
+        a = t1 + t2;
+    }
+    s->h[0] += a;
+    s->h[1] += b;
+    s->h[2] += c;
+    s->h[3] += d;
+    s->h[4] += e;
+    s->h[5] += f;
+    s->h[6] += g;
+    s->h[7] += h;
 }
 
 static void
 pad(struct sha256 *s)
 {
-	unsigned r = s->len % 64;
+    unsigned r = s->len % 64;
 
-	s->buf[r++] = 0x80;
-	if (r > 56) {
-		memset(s->buf + r, 0, 64 - r);
-		r = 0;
-		processblock(s, s->buf);
-	}
-	memset(s->buf + r, 0, 56 - r);
-	s->len *= 8;
-	s->buf[56] = s->len >> 56;
-	s->buf[57] = s->len >> 48;
-	s->buf[58] = s->len >> 40;
-	s->buf[59] = s->len >> 32;
-	s->buf[60] = s->len >> 24;
-	s->buf[61] = s->len >> 16;
-	s->buf[62] = s->len >> 8;
-	s->buf[63] = s->len;
-	processblock(s, s->buf);
+    s->buf[r++] = 0x80;
+    if (r > 56) {
+        memset(s->buf + r, 0, 64 - r);
+        r = 0;
+        processblock(s, s->buf);
+    }
+    memset(s->buf + r, 0, 56 - r);
+    s->len *= 8;
+    s->buf[56] = s->len >> 56;
+    s->buf[57] = s->len >> 48;
+    s->buf[58] = s->len >> 40;
+    s->buf[59] = s->len >> 32;
+    s->buf[60] = s->len >> 24;
+    s->buf[61] = s->len >> 16;
+    s->buf[62] = s->len >> 8;
+    s->buf[63] = s->len;
+    processblock(s, s->buf);
 }
 
 void
 sha256_init(void *ctx)
 {
-	struct sha256 *s = ctx;
-	s->len = 0;
-	s->h[0] = 0x6a09e667;
-	s->h[1] = 0xbb67ae85;
-	s->h[2] = 0x3c6ef372;
-	s->h[3] = 0xa54ff53a;
-	s->h[4] = 0x510e527f;
-	s->h[5] = 0x9b05688c;
-	s->h[6] = 0x1f83d9ab;
-	s->h[7] = 0x5be0cd19;
+    struct sha256 *s = ctx;
+    s->len = 0;
+    s->h[0] = 0x6a09e667;
+    s->h[1] = 0xbb67ae85;
+    s->h[2] = 0x3c6ef372;
+    s->h[3] = 0xa54ff53a;
+    s->h[4] = 0x510e527f;
+    s->h[5] = 0x9b05688c;
+    s->h[6] = 0x1f83d9ab;
+    s->h[7] = 0x5be0cd19;
 }
 
 void
 sha256_sum_n(void *ctx, uint8_t *md, int n)
 {
-	struct sha256 *s = ctx;
-	int i;
+    struct sha256 *s = ctx;
+    int i;
 
-	pad(s);
-	for (i = 0; i < n; i++) {
-		md[4*i] = s->h[i] >> 24;
-		md[4*i+1] = s->h[i] >> 16;
-		md[4*i+2] = s->h[i] >> 8;
-		md[4*i+3] = s->h[i];
-	}
+    pad(s);
+    for (i = 0; i < n; i++) {
+        md[4*i] = s->h[i] >> 24;
+        md[4*i+1] = s->h[i] >> 16;
+        md[4*i+2] = s->h[i] >> 8;
+        md[4*i+3] = s->h[i];
+    }
 }
 
 void
 sha256_sum(void *ctx, uint8_t md[SHA256_DIGEST_LENGTH])
 {
-	sha256_sum_n(ctx, md, 8);
+    sha256_sum_n(ctx, md, 8);
 }
 
 void
 sha256_update(void *ctx, const void *m, unsigned long len)
 {
-	struct sha256 *s = ctx;
-	const uint8_t *p = m;
-	unsigned r = s->len % 64;
+    struct sha256 *s = ctx;
+    const uint8_t *p = m;
+    unsigned r = s->len % 64;
 
-	s->len += len;
-	if (r) {
-		if (len < 64 - r) {
-			memcpy(s->buf + r, p, len);
-			return;
-		}
-		memcpy(s->buf + r, p, 64 - r);
-		len -= 64 - r;
-		p += 64 - r;
-		processblock(s, s->buf);
-	}
-	for (; len >= 64; len -= 64, p += 64)
-		processblock(s, p);
-	memcpy(s->buf, p, len);
+    s->len += len;
+    if (r) {
+        if (len < 64 - r) {
+            memcpy(s->buf + r, p, len);
+            return;
+        }
+        memcpy(s->buf + r, p, 64 - r);
+        len -= 64 - r;
+        p += 64 - r;
+        processblock(s, s->buf);
+    }
+    for (; len >= 64; len -= 64, p += 64)
+        processblock(s, p);
+    memcpy(s->buf, p, len);
 }
