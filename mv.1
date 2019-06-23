@@ -7,6 +7,7 @@
 .Sh SYNOPSIS
 .Nm
 .Op Fl f
+.Op Fl v
 .Ar source ...
 .Ar dest
 .Sh DESCRIPTION
@@ -28,6 +29,8 @@ overwrites the latter with the former.
 Do not prompt before overwriting.
 .Ar dest .
 Prompting has not been implemented yet.
+.It Fl v
+Write "'source' -> 'dest'" for each source to stderr.
 .El
 .Sh STANDARDS
 The
